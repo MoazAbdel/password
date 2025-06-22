@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مدقق قوة كلمة المرور</title>
+    <style>
+        body {
+            font-family: 'Tajawal', sans-serif;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, #4361ee, #3f37c9);
+            color: #2b2d42;
+            text-align: right;
+        }
+        
+        .container {
+            width: 90%;
+            max-width: 450px;
+            padding: 2rem;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+        }
+        
+        h1 {
+            color: #4361ee;
+            margin-bottom: 1.5rem;
+        }
+        
+        input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .strength-meter {
+            margin: 1.5rem 0;
+        }
+        
+        .strength-bar {
+            height: 8px;
+            width: 100%;
+            background-color: #eee;
+            border-radius: 4px;
+            margin-top: 5px;
+        }
+        
+        .strength-progress {
+            height: 100%;
+            width: 0;
+            border-radius: 4px;
+            transition: width 0.4s, background-color 0.4s;
+        }
+        
+        .criteria-item {
+            margin-bottom: 5px;
+            position: relative;
+            padding-right: 20px;
+        }
+        
+        .criteria-item:before {
+            content: "•";
+            color: #f94144;
+            position: absolute;
+            right: 0;
+        }
+        
+        .criteria-item.valid:before {
+            content: "✓";
+            color: #4cc9f0;
+        }
+        
+        .toggle-password {
+            color: #4361ee;
+            cursor: pointer;
+            display: inline-block;
+            margin-top: 10px;
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <h1>مدقق قوة كلمة المرور</h1>
+        <input type="password" id="password" placeholder="أدخل كلمة المرور">
+        
+        <div class="strength-meter">
+            <div>قوة كلمة المرور: <span id="strengthText">ضعيفة</span></div>
+            <div class="strength-bar">
+                <div class="strength-progress" id="strengthBar"></div>
+            </div>
+        </div>
+        
+        <div id="criteria">
+            <div class="criteria-item" id="length">8 أحرف على الأقل</div>
+            <div class="criteria-item" id="uppercase">حرف كبير واحد على الأقل</div>
+            <div class="criteria-item" id="lowercase">حرف صغير واحد على الأقل</div>
+            <div class="criteria-item" id="number">رقم واحد على الأقل</div>
+            <div class="criteria-item" id="symbol">رمز خاص واحد على الأقل</div>
+        </div>
+        
+        <div class="toggle-password" id="togglePassword">إظهار كلمة المرور</div>
+    </div>
+
+    <script>
+        const passwordInput = document.getElementById('password');
+        const strengthBar = document.getElementById('strengthBar');
+        const strengthText = document.getElementById('strengthText');
+        const togglePassword = document.getElementById('togglePassword');
+        
+        passwordInput.addEventListener('input', function() {
+            const password = this.value;
+            
+            // Check criteria
+            const checks = {
+                length: password.length >= 8,
+                uppercase: /[A-Z]/.test(password),
+                lowercase: /[a-z]/.test(password),
+                number: /\d/.test(password),
+                symbol: /[!@#$%^&*(),.?":{}|<>]/.test(password)
+            };
+            
+            // Update criteria UI
+            Object.keys(checks).forEach(key => {
+                const element = document.getElementById(key);
+                checks[key] ? element.classList.add('valid') : element.classList.remove('valid');
+            });
+            
+            // Calculate strength
+            const strength = Object.values(checks).filter(Boolean).length * 20;
+            updateStrength(strength);
+        });
+        
+        function updateStrength(strength) {
+            strengthBar.style.width = strength + '%';
+            
+            if (strength <= 40) {
+                strengthBar.style.backgroundColor = '#f94144';
+                strengthText.textContent = 'ضعيفة';
+            } else if (strength <= 80) {
+                strengthBar.style.backgroundColor = '#f8961e';
+                strengthText.textContent = 'متوسطة';
+            } else {
+                strengthBar.style.backgroundColor = '#4cc9f0';
+                strengthText.textContent = 'قوية';
+            }
+        }
+        
+        togglePassword.addEventListener('click', function() {
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                this.textContent = 'إخفاء كلمة المرور';
+            } else {
+                passwordInput.type = 'password';
+                this.textContent = 'إظهار كلمة المرور';
+            }
+        });
+    </script>
+</body>
+</html>
