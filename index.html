@@ -5,163 +5,446 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>مدقق قوة كلمة المرور</title>
     <style>
-        body {
-            font-family: 'Tajawal', sans-serif;
+        @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap');
+
+        * {
             margin: 0;
             padding: 0;
+            box-sizing: border-box;
+            font-family: 'Tajawal', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            background: linear-gradient(135deg, #4361ee, #3f37c9);
-            color: #2b2d42;
-            text-align: right;
+            padding: 20px;
+            animation: gradientShift 10s ease infinite;
+            background-size: 200% 200%;
         }
-        
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
         .container {
-            width: 90%;
-            max-width: 450px;
-            padding: 2rem;
-            background: rgba(255, 255, 255, 0.9);
-            border-radius: 20px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
-        }
-        
-        h1 {
-            color: #4361ee;
-            margin-bottom: 1.5rem;
-        }
-        
-        input {
             width: 100%;
-            padding: 12px 15px;
+            max-width: 500px;
+        }
+
+        .language-switcher {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 10px;
+        }
+
+        .language-switcher button {
+            border: none;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 5px 10px;
+            margin-left: 5px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .language-switcher button.active {
+            background: rgba(255, 255, 255, 0.4);
+            font-weight: bold;
+        }
+
+        .password-checker {
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(5px);
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        p {
+            color: #666;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .input-group {
+            display: flex;
+            margin-bottom: 20px;
             border: 2px solid #ddd;
             border-radius: 8px;
-            font-size: 1rem;
-            margin-bottom: 1rem;
+            overflow: hidden;
+            transition: all 0.3s ease;
         }
-        
+
+        .input-group:focus-within {
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.2);
+        }
+
+        input {
+            flex: 1;
+            padding: 15px;
+            border: none;
+            outline: none;
+            font-size: 16px;
+            background: transparent;
+        }
+
+        button#toggle-visibility {
+            background: #eee;
+            border: none;
+            padding: 0 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        button#toggle-visibility:hover {
+            background: #ddd;
+        }
+
         .strength-meter {
-            margin: 1.5rem 0;
-        }
-        
-        .strength-bar {
-            height: 8px;
-            width: 100%;
-            background-color: #eee;
-            border-radius: 4px;
-            margin-top: 5px;
-        }
-        
-        .strength-progress {
-            height: 100%;
-            width: 0;
-            border-radius: 4px;
-            transition: width 0.4s, background-color 0.4s;
-        }
-        
-        .criteria-item {
-            margin-bottom: 5px;
+            height: 10px;
+            background: #eee;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            overflow: hidden;
             position: relative;
-            padding-right: 20px;
         }
-        
-        .criteria-item:before {
-            content: "•";
-            color: #f94144;
+
+        .meter-bar {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+        }
+
+        .meter-fill {
+            height: 100%;
+            width: 0%;
+            border-radius: 5px;
+            transition: all 0.5s ease;
+            background: linear-gradient(90deg, #ff4757, #ff6348, #ff7f50, #f1c40f, #2ecc71);
+            background-size: 500% 100%;
+            animation: meterColor 2s ease infinite;
+        }
+
+        @keyframes meterColor {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .strength-text {
+            text-align: center;
+            font-weight: bold;
+            margin-bottom: 20px;
+            font-size: 18px;
+            transition: all 0.3s ease;
+        }
+
+        .requirements h2 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 18px;
+        }
+
+        .requirements ul {
+            list-style: none;
+            margin-bottom: 20px;
+        }
+
+        .requirements li {
+            padding: 5px 0;
+            position: relative;
+            padding-right: 25px;
+        }
+
+        .requirements li::before {
+            content: "✖";
             position: absolute;
             right: 0;
+            color: #ff4757;
         }
-        
-        .criteria-item.valid:before {
+
+        .requirements li.valid::before {
             content: "✓";
-            color: #4cc9f0;
+            color: #2ecc71;
         }
-        
-        .toggle-password {
-            color: #4361ee;
-            cursor: pointer;
-            display: inline-block;
-            margin-top: 10px;
+
+        .time-estimate {
+            text-align: center;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        /* English version styles */
+        [dir="ltr"] {
+            direction: ltr;
+            text-align: left;
+        }
+
+        [dir="ltr"] .requirements li {
+            padding-right: 0;
+            padding-left: 25px;
+        }
+
+        [dir="ltr"] .requirements li::before {
+            right: auto;
+            left: 0;
         }
     </style>
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
 </head>
 <body>
     <div class="container">
-        <h1>مدقق قوة كلمة المرور</h1>
-        <input type="password" id="password" placeholder="أدخل كلمة المرور">
+        <div class="language-switcher">
+            <button id="lang-ar" class="active">العربية</button>
+            <button id="lang-en">English</button>
+        </div>
         
-        <div class="strength-meter">
-            <div>قوة كلمة المرور: <span id="strengthText">ضعيفة</span></div>
-            <div class="strength-bar">
-                <div class="strength-progress" id="strengthBar"></div>
+        <div class="password-checker">
+            <h1 id="title">مدقق قوة كلمة المرور</h1>
+            <p id="subtitle">أدخل كلمة المرور لفحص قوتها</p>
+            
+            <div class="input-group">
+                <input type="password" id="password-input" placeholder="أدخل كلمة المرور هنا">
+                <button id="toggle-visibility">👁️</button>
+            </div>
+            
+            <div class="strength-meter">
+                <div class="meter-bar"></div>
+                <div class="meter-fill" id="meter-fill"></div>
+            </div>
+            
+            <div class="strength-text" id="strength-text">القوة: غير معروف</div>
+            
+            <div class="requirements">
+                <h2 id="requirements-title">متطلبات كلمة المرور القوية:</h2>
+                <ul>
+                    <li id="req-length">8 أحرف على الأقل</li>
+                    <li id="req-upper">حروف كبيرة</li>
+                    <li id="req-lower">حروف صغيرة</li>
+                    <li id="req-number">أرقام</li>
+                    <li id="req-special">رموز خاصة</li>
+                </ul>
+            </div>
+            
+            <div class="time-estimate" id="time-estimate">
+                الوقت المقدر للاختراق: غير معروف
             </div>
         </div>
-        
-        <div id="criteria">
-            <div class="criteria-item" id="length">8 أحرف على الأقل</div>
-            <div class="criteria-item" id="uppercase">حرف كبير واحد على الأقل</div>
-            <div class="criteria-item" id="lowercase">حرف صغير واحد على الأقل</div>
-            <div class="criteria-item" id="number">رقم واحد على الأقل</div>
-            <div class="criteria-item" id="symbol">رمز خاص واحد على الأقل</div>
-        </div>
-        
-        <div class="toggle-password" id="togglePassword">إظهار كلمة المرور</div>
     </div>
 
     <script>
-        const passwordInput = document.getElementById('password');
-        const strengthBar = document.getElementById('strengthBar');
-        const strengthText = document.getElementById('strengthText');
-        const togglePassword = document.getElementById('togglePassword');
-        
-        passwordInput.addEventListener('input', function() {
-            const password = this.value;
+        document.addEventListener('DOMContentLoaded', function() {
+            // Elements
+            const passwordInput = document.getElementById('password-input');
+            const toggleButton = document.getElementById('toggle-visibility');
+            const meterFill = document.getElementById('meter-fill');
+            const strengthText = document.getElementById('strength-text');
+            const timeEstimate = document.getElementById('time-estimate');
+            const reqItems = document.querySelectorAll('.requirements li');
+            const langArBtn = document.getElementById('lang-ar');
+            const langEnBtn = document.getElementById('lang-en');
+            const htmlElement = document.documentElement;
             
-            // Check criteria
-            const checks = {
-                length: password.length >= 8,
-                uppercase: /[A-Z]/.test(password),
-                lowercase: /[a-z]/.test(password),
-                number: /\d/.test(password),
-                symbol: /[!@#$%^&*(),.?":{}|<>]/.test(password)
+            // Translations
+            const translations = {
+                ar: {
+                    title: "مدقق قوة كلمة المرور",
+                    subtitle: "أدخل كلمة المرور لفحص قوتها",
+                    placeholder: "أدخل كلمة المرور هنا",
+                    strength: {
+                        0: "ضعيفة جداً",
+                        1: "ضعيفة",
+                        2: "متوسطة",
+                        3: "قوية",
+                        4: "قوية جداً"
+                    },
+                    requirementsTitle: "متطلبات كلمة المرور القوية:",
+                    requirements: [
+                        "8 أحرف على الأقل",
+                        "حروف كبيرة",
+                        "حروف صغيرة",
+                        "أرقام",
+                        "رموز خاصة"
+                    ],
+                    timeEstimate: "الوقت المقدر للاختراق: "
+                },
+                en: {
+                    title: "Password Strength Checker",
+                    subtitle: "Enter your password to check its strength",
+                    placeholder: "Enter your password here",
+                    strength: {
+                        0: "Very Weak",
+                        1: "Weak",
+                        2: "Medium",
+                        3: "Strong",
+                        4: "Very Strong"
+                    },
+                    requirementsTitle: "Strong Password Requirements:",
+                    requirements: [
+                        "At least 8 characters",
+                        "Uppercase letters",
+                        "Lowercase letters",
+                        "Numbers",
+                        "Special symbols"
+                    ],
+                    timeEstimate: "Estimated time to crack: "
+                }
             };
             
-            // Update criteria UI
-            Object.keys(checks).forEach(key => {
-                const element = document.getElementById(key);
-                checks[key] ? element.classList.add('valid') : element.classList.remove('valid');
+            let currentLang = 'ar';
+            
+            // Language switching
+            function switchLanguage(lang) {
+                currentLang = lang;
+                htmlElement.setAttribute('dir', lang === 'ar' ? 'rtl' : 'ltr');
+                htmlElement.setAttribute('lang', lang);
+                
+                // Update UI elements
+                document.getElementById('title').textContent = translations[lang].title;
+                document.getElementById('subtitle').textContent = translations[lang].subtitle;
+                passwordInput.placeholder = translations[lang].placeholder;
+                document.getElementById('requirements-title').textContent = translations[lang].requirementsTitle;
+                
+                // Update requirements list
+                translations[lang].requirements.forEach((text, index) => {
+                    reqItems[index].textContent = text;
+                });
+                
+                // Update active button
+                langArBtn.classList.toggle('active', lang === 'ar');
+                langEnBtn.classList.toggle('active', lang === 'en');
+                
+                // Re-check password to update strength text
+                if (passwordInput.value) {
+                    checkPasswordStrength(passwordInput.value);
+                }
+            }
+            
+            langArBtn.addEventListener('click', () => switchLanguage('ar'));
+            langEnBtn.addEventListener('click', () => switchLanguage('en'));
+            
+            // Toggle password visibility
+            toggleButton.addEventListener('click', function() {
+                const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+                passwordInput.setAttribute('type', type);
+                this.textContent = type === 'password' ? '👁️' : '👁️‍🗨️';
             });
             
-            // Calculate strength
-            const strength = Object.values(checks).filter(Boolean).length * 20;
-            updateStrength(strength);
-        });
-        
-        function updateStrength(strength) {
-            strengthBar.style.width = strength + '%';
+            // Check password strength on input
+            passwordInput.addEventListener('input', function() {
+                checkPasswordStrength(this.value);
+            });
             
-            if (strength <= 40) {
-                strengthBar.style.backgroundColor = '#f94144';
-                strengthText.textContent = 'ضعيفة';
-            } else if (strength <= 80) {
-                strengthBar.style.backgroundColor = '#f8961e';
-                strengthText.textContent = 'متوسطة';
-            } else {
-                strengthBar.style.backgroundColor = '#4cc9f0';
-                strengthText.textContent = 'قوية';
+            function checkPasswordStrength(password) {
+                // Reset requirements
+                reqItems.forEach(item => item.classList.remove('valid'));
+                
+                // Calculate strength
+                let strength = 0;
+                
+                // Length check (at least 8 characters)
+                if (password.length >= 8) {
+                    strength++;
+                    reqItems[0].classList.add('valid');
+                }
+                
+                // Uppercase check
+                if (/[A-Z]/.test(password)) {
+                    strength++;
+                    reqItems[1].classList.add('valid');
+                }
+                
+                // Lowercase check
+                if (/[a-z]/.test(password)) {
+                    strength++;
+                    reqItems[2].classList.add('valid');
+                }
+                
+                // Number check
+                if (/\d/.test(password)) {
+                    strength++;
+                    reqItems[3].classList.add('valid');
+                }
+                
+                // Special character check
+                if (/[^A-Za-z0-9]/.test(password)) {
+                    strength++;
+                    reqItems[4].classList.add('valid');
+                }
+                
+                // Update strength meter
+                const percentage = (strength / 5) * 100;
+                meterFill.style.width = `${percentage}%`;
+                
+                // Update strength text
+                strengthText.textContent = `${translations[currentLang].strength[strength - 1] || translations[currentLang].strength[0]}`;
+                strengthText.style.color = getStrengthColor(strength);
+                
+                // Calculate and display time estimate
+                const timeToCrack = calculateTimeToCrack(password);
+                timeEstimate.textContent = translations[currentLang].timeEstimate + timeToCrack;
+                timeEstimate.style.color = getStrengthColor(strength);
             }
-        }
-        
-        togglePassword.addEventListener('click', function() {
-            if (passwordInput.type === 'password') {
-                passwordInput.type = 'text';
-                this.textContent = 'إخفاء كلمة المرور';
-            } else {
-                passwordInput.type = 'password';
-                this.textContent = 'إظهار كلمة المرور';
+            
+            function getStrengthColor(strength) {
+                const colors = ['#ff4757', '#ff6348', '#f1c40f', '#2ecc71', '#27ae60'];
+                return colors[strength - 1] || colors[0];
             }
+            
+            function calculateTimeToCrack(password) {
+                if (!password) return translations[currentLang].strength[0];
+                
+                // Very simplified estimation (for demonstration)
+                const charSetSize = getCharsetSize(password);
+                const possibleCombinations = Math.pow(charSetSize, password.length);
+                const guessesPerSecond = 1e9; // 1 billion guesses per second
+                
+                const seconds = possibleCombinations / guessesPerSecond;
+                
+                if (seconds < 1) return currentLang === 'ar' ? "أقل من ثانية" : "less than a second";
+                if (seconds < 60) return currentLang === 'ar' ? "ثوانٍ" : "seconds";
+                if (seconds < 3600) return currentLang === 'ar' ? "دقائق" : "minutes";
+                if (seconds < 86400) return currentLang === 'ar' ? "ساعات" : "hours";
+                if (seconds < 2592000) return currentLang === 'ar' ? "أيام" : "days";
+                if (seconds < 31536000) return currentLang === 'ar' ? "شهور" : "months";
+                if (seconds < 3153600000) return currentLang === 'ar' ? "سنوات" : "years";
+                return currentLang === 'ar' ? "قرون" : "centuries";
+            }
+            
+            function getCharsetSize(password) {
+                let size = 0;
+                if (/[a-z]/.test(password)) size += 26;
+                if (/[A-Z]/.test(password)) size += 26;
+                if (/\d/.test(password)) size += 10;
+                if (/[^A-Za-z0-9]/.test(password)) size += 32; // Approximate for special chars
+                return size || 1;
+            }
+            
+            // Initialize with Arabic
+            switchLanguage('ar');
         });
     </script>
 </body>
